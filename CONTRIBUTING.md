@@ -31,7 +31,7 @@ Before contributing, familiarize yourself with the modular architecture:
 ### 2. Local Setup
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/telegram-migration-pipeline.git
+git clone https://github.com/shivanshjain456/telegram-migration-pipeline.git
 cd telegram-migration-pipeline
 
 # Create and activate virtual environment

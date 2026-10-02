@@ -2,7 +2,7 @@
 
 > High-throughput, crash-resilient data migration and extraction engine for Telegram channels, supergroups, and media archives.
 
-[![CI](https://github.com/your-username/telegram-migration-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/telegram-migration-pipeline/actions/workflows/ci.yml)
+[![CI](https://github.com/shivanshjain456/telegram-migration-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/shivanshjain456/telegram-migration-pipeline/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen)](tests/)
@@ -138,7 +138,7 @@ Forwarding Messages ━━━━━━━━━━━━━━━━━━━━
 ### 2. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/telegram-migration-pipeline.git
+git clone https://github.com/shivanshjain456/telegram-migration-pipeline.git
 cd telegram-migration-pipeline
 
 # Create and activate virtual environment
