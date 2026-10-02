@@ -1,4 +1,4 @@
-# 3-Minute Recruiter & Engineering Review
+# 3-Minute Engineering & Architecture Review
 
 ## Quick Overview
 

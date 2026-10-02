@@ -200,7 +200,7 @@ Deep technical architecture guides, design tradeoffs, and operational manuals ar
 * [Security & Privacy](docs/security.md): MTProto session file handling, path traversal protection, and data governance.
 * [Operational Runbook](docs/operations.md): CLI flags, rotating log management, failure mode mitigations, and headless deployment.
 * [Known Limitations](docs/limitations.md): Telegram platform constraints, server FloodWait rules, and file size limits.
-* [Recruiter Review](docs/recruiter-review.md): One-page architectural breakdown for technical interviews.
+* [Technical Review](docs/technical-review.md): One-page architectural breakdown for technical interviews.
 
 ---
 
