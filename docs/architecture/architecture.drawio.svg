@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1240" height="940" viewBox="0 0 1240 940" content="&lt;mxfile host=&quot;app.diagrams.net&quot; modified=&quot;2026-10-03T02:00:00.000Z&quot; agent=&quot;Mozilla/5.0&quot; version=&quot;24.0.0&quot; type=&quot;embed&quot;&gt;
+  &lt;diagram id=&quot;telegram-arch&quot; name=&quot;Telegram Migration Architecture&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1400&quot; dy=&quot;900&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1240&quot; pageHeight=&quot;940&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        
+        &lt;mxCell id=&quot;h1&quot; value=&quot;&amp;lt;b&amp;gt;Telegram Migration Pipeline — Concurrency &amp;amp;amp; Reliability Architecture&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;C4 Component Model • QThread-to-Asyncio Bridge • Native MTProto Batching • SHA-256 Checkpointing • Adaptive Flood Control&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;strokeColor=none;fontColor=#FFFFFF;align=left;spacingLeft=20;fontSize=14;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;30&quot; width=&quot;1160&quot; height=&quot;70&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;pres-layer&quot; value=&quot;PRESENTATION TIER: DUAL INTERFACE (DESKTOP GUI &amp;amp;amp; HEADLESS CLI)&quot; style=&quot;swimlane;whiteSpace=wrap;html=1;strokeColor=#94A3B8;fillColor=#F8FAFC;fontColor=#64748B;fontSize=11;startSize=26;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;120&quot; width=&quot;1160&quot; height=&quot;115&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;gui&quot; value=&quot;&amp;lt;b&amp;gt;PyQt6 Interactive Desktop GUI (main.py)&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Channel queue, live progress, non-blocking 60 FPS UI&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E3A8A;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;pres-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;34&quot; width=&quot;510&quot; height=&quot;66&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;cli&quot; value=&quot;&amp;lt;b&amp;gt;Rich Headless Terminal CLI (cli.py)&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Automated server daemon, queue processing, UNIX signals&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E3A8A;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;pres-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;610&quot; y=&quot;34&quot; width=&quot;510&quot; height=&quot;66&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;bridge-layer&quot; value=&quot;CONCURRENCY &amp;amp;amp; WORKER BRIDGE: ISOLATED OS THREAD &amp;amp;amp; ASYNCIO EVENT LOOP&quot; style=&quot;swimlane;whiteSpace=wrap;html=1;strokeColor=#8B5CF6;strokeWidth=2;fillColor=#F5F3FF;fontColor=#6D28D9;fontSize=12;startSize=28;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;275&quot; width=&quot;1160&quot; height=&quot;110&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;qthread&quot; value=&quot;&amp;lt;b&amp;gt;ForwardWorker (QThread)&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Dedicated thread, private asyncio loop&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;fontColor=#4C1D95;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;bridge-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;30&quot; y=&quot;36&quot; width=&quot;340&quot; height=&quot;60&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;signals&quot; value=&quot;&amp;lt;b&amp;gt;Thread-Safe Signal Dispatch&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;sig_progress, sig_log, sig_finished&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;fontColor=#4C1D95;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;bridge-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;410&quot; y=&quot;36&quot; width=&quot;340&quot; height=&quot;60&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;canceller&quot; value=&quot;&amp;lt;b&amp;gt;Cancellation &amp;amp;amp; State Flusher&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;threading.Event stop flag, flush checkpoint&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#8B5CF6;fontColor=#4C1D95;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;bridge-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;790&quot; y=&quot;36&quot; width=&quot;340&quot; height=&quot;60&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;engine-layer&quot; value=&quot;EXECUTION ENGINE: FAULT-TOLERANT BULK FORWARDER (utils.py)&quot; style=&quot;swimlane;whiteSpace=wrap;html=1;strokeColor=#10B981;strokeWidth=2;fillColor=#FFFFFF;fontColor=#064E3B;fontSize=12;startSize=30;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;425&quot; width=&quot;820&quot; height=&quot;280&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;route-mgr&quot; value=&quot;&amp;lt;b&amp;gt;Route Key Manager&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;SHA-256 route hash (16-char)&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#F8FAFC;strokeColor=#64748B;fontColor=#1E293B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;engine-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;20&quot; y=&quot;44&quot; width=&quot;245&quot; height=&quot;100&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;flood-ctrl&quot; value=&quot;&amp;lt;b&amp;gt;Adaptive Flood Controller&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Jitter delay, FloodWait cooldown&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#064E3B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;engine-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;285&quot; y=&quot;44&quot; width=&quot;250&quot; height=&quot;100&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;tcp-rec&quot; value=&quot;&amp;lt;b&amp;gt;TCP Connection Recovery&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Catches WinError 64 &amp;amp;amp; reconnects&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontColor=#991B1B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;engine-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;555&quot; y=&quot;44&quot; width=&quot;245&quot; height=&quot;100&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;batch-mode&quot; value=&quot;&amp;lt;b&amp;gt;Native RPC Batching Mode (Fast)&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Up to 100 msgs/call, server-side copy&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#064E3B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;engine-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;20&quot; y=&quot;158&quot; width=&quot;380&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;anon-mode&quot; value=&quot;&amp;lt;b&amp;gt;Anonymized Re-Send Mode (Clean)&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;In-memory media buffer, strips headers&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E3A8A;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;engine-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;420&quot; y=&quot;158&quot; width=&quot;380&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;extractor-layer&quot; value=&quot;EXTRACTION ENGINE (link_extractor.py)&quot; style=&quot;swimlane;whiteSpace=wrap;html=1;strokeColor=#6366F1;strokeWidth=2;fillColor=#EEF2FF;fontColor=#3730A3;fontSize=12;startSize=30;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;880&quot; y=&quot;425&quot; width=&quot;320&quot; height=&quot;280&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;entity-ext&quot; value=&quot;&amp;lt;b&amp;gt;Entity &amp;amp;amp; URL Extractor&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;MessageEntityTextUrl, t.me handles&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6366F1;fontColor=#1E1B4B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;extractor-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;15&quot; y=&quot;44&quot; width=&quot;290&quot; height=&quot;100&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;export-ext&quot; value=&quot;&amp;lt;b&amp;gt;Multi-Format Exporter&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;JSON stream, CSV, Excel XLSX&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6366F1;fontColor=#1E1B4B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;extractor-layer&quot;&gt;
+          &lt;mxGeometry x=&quot;15&quot; y=&quot;158&quot; width=&quot;290&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      .title { font-weight: 700; fill: #0F172A; }
+      .subtitle { font-weight: 500; fill: #475569; }
+      .box-title { font-weight: 600; font-size: 14px; fill: #0F172A; }
+      .box-desc { font-weight: 400; font-size: 11px; fill: #475569; }
+      .badge-text { font-weight: 600; font-size: 10px; }
+      .boundary-title { font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+      .edge-label { font-weight: 500; font-size: 11px; fill: #334155; background: #FFFFFF; }
+    </style>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.05   0 0 0 0 0.09   0 0 0 0 0.16  0 0 0 0.06 0" />
+      <feOffset dx="0" dy="2" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563EB" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#7C3AED" />
+    </marker>
+  </defs>
+
+  <!-- Clean Canvas Background -->
+  <rect width="100%" height="100%" fill="#F8FAFC" rx="12" stroke="#CBD5E1" stroke-width="1.5" />
+  
+  
+  <!-- Header Banner -->
+  <g transform="translate(40, 30)">
+    <rect x="0" y="0" width="1160" height="70" rx="8" fill="#0F172A" />
+    <text x="24" y="32" font-size="20" font-weight="700" fill="#FFFFFF">Telegram Migration Pipeline — Concurrency &amp; Reliability Architecture</text>
+    <text x="24" y="54" font-size="12" font-weight="400" fill="#94A3B8">C4 Component Model • QThread-to-Asyncio Bridge • Native MTProto Batching • SHA-256 Checkpointing • Adaptive Flood Control</text>
+    <rect x="940" y="22" width="195" height="26" rx="13" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <text x="1037" y="39" font-size="11" font-weight="600" fill="#38BDF8" text-anchor="middle">Python 3.12 • Telethon • PyQt6</text>
+  </g>
+
+  <!-- 1. Presentation Tier (Dual Interface) -->
+  <g transform="translate(40, 120)">
+    <rect x="0" y="0" width="1160" height="115" rx="8" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" />
+    <text x="16" y="22" font-size="11" font-weight="700" fill="#64748B" letter-spacing="1">PRESENTATION TIER: DUAL INTERFACE (DESKTOP GUI &amp; HEADLESS CLI)</text>
+    
+    <!-- PyQt6 Desktop GUI -->
+    <g transform="translate(40, 34)">
+      <rect x="0" y="0" width="510" height="66" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="16" y="24" font-size="14" font-weight="600" fill="#1E3A8A">PyQt6 Interactive Desktop GUI (main.py)</text>
+      <text x="16" y="42" font-size="11" fill="#3B82F6">Visual channel queue setup, real-time progress bars, type filters, and live log stream</text>
+      <text x="16" y="56" font-size="10" font-weight="500" fill="#60A5FA">QMainWindow • Dedicated QThread worker • Non-blocking 60 FPS UI</text>
+    </g>
+
+    <!-- Rich Headless CLI -->
+    <g transform="translate(610, 34)">
+      <rect x="0" y="0" width="510" height="66" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="16" y="24" font-size="14" font-weight="600" fill="#1E3A8A">Rich Headless Terminal CLI (cli.py)</text>
+      <text x="16" y="42" font-size="11" fill="#3B82F6">Automated server daemon, queue file processing (--source-queue), transfer speed telemetry</text>
+      <text x="16" y="56" font-size="10" font-weight="500" fill="#60A5FA">UNIX signals (SIGINT / SIGTERM) • Rich Progress &amp; Live Tables</text>
+    </g>
+  </g>
+
+  <!-- Connectors: Presentation -> Concurrency Bridge -->
+  <path d="M 295 235 L 295 275" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)" fill="none" />
+  <path d="M 865 235 L 865 275" stroke="#2563EB" stroke-width="2" marker-end="url(#arrow-blue)" fill="none" />
+
+  <!-- 2. Concurrency & Event Loop Bridge -->
+  <g transform="translate(40, 275)">
+    <rect x="0" y="0" width="1160" height="110" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="2" filter="url(#shadow)" />
+    <text x="16" y="22" font-size="12" font-weight="700" fill="#6D28D9" letter-spacing="0.5">CONCURRENCY &amp; WORKER BRIDGE: ISOLATED OS THREAD &amp; ASYNCIO EVENT LOOP</text>
+
+    <!-- QThread Host -->
+    <g transform="translate(30, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#4C1D95">ForwardWorker (QThread)</text>
+      <text x="12" y="36" font-size="10" fill="#6D28D9">Spawns dedicated OS worker thread</text>
+      <text x="12" y="50" font-size="10" fill="#6D28D9">Owns private asyncio.new_event_loop()</text>
+    </g>
+
+    <!-- Qt Signal Bridge -->
+    <g transform="translate(410, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#4C1D95">Thread-Safe Signal Dispatch</text>
+      <text x="12" y="36" font-size="10" fill="#6D28D9">sig_progress: (done, total, speed)</text>
+      <text x="12" y="50" font-size="10" fill="#6D28D9">sig_log: text, sig_finished: status</text>
+    </g>
+
+    <!-- Graceful Cancellation -->
+    <g transform="translate(790, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#8B5CF6" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#4C1D95">Cancellation &amp; State Flusher</text>
+      <text x="12" y="36" font-size="10" fill="#6D28D9">threading.Event (stop_requested)</text>
+      <text x="12" y="50" font-size="10" fill="#6D28D9">Flushes checkpoint before clean exit</text>
+    </g>
+  </g>
+
+  <!-- Connector: Bridge -> Execution Engine -->
+  <path d="M 620 385 L 620 425" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrow-purple)" fill="none" />
+
+  <!-- 3. Core Execution Engine (utils.py) -->
+  <g transform="translate(40, 425)">
+    <rect x="0" y="0" width="820" height="280" rx="8" fill="#FFFFFF" stroke="#10B981" stroke-width="2" filter="url(#shadow)" />
+    <rect x="0" y="0" width="820" height="30" rx="8" fill="#ECFDF5" />
+    <text x="16" y="20" font-size="12" font-weight="700" fill="#064E3B" letter-spacing="0.5">EXECUTION ENGINE: FAULT-TOLERANT BULK FORWARDER (utils.py)</text>
+
+    <!-- Route Manager & Hashing -->
+    <g transform="translate(20, 44)">
+      <rect x="0" y="0" width="245" height="100" rx="6" fill="#F8FAFC" stroke="#64748B" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#1E293B">Route Key Manager</text>
+      <text x="12" y="40" font-size="11" fill="#475569">• SHA-256 route hashing</text>
+      <text x="12" y="56" font-size="11" fill="#475569">• source -&gt; target route keys</text>
+      <text x="12" y="72" font-size="11" fill="#475569">• Traversal-safe 16-char hashes</text>
+      <text x="12" y="88" font-size="10" font-weight="600" fill="#0284C7">Prevents filesystem collisions</text>
+    </g>
+
+    <!-- Adaptive Rate Limiting & FloodWait -->
+    <g transform="translate(285, 44)">
+      <rect x="0" y="0" width="250" height="100" rx="6" fill="#ECFDF5" stroke="#10B981" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#064E3B">Adaptive Flood Controller</text>
+      <text x="12" y="40" font-size="11" fill="#047857">• Jitter delay (0.8s - 2.5s uniform)</text>
+      <text x="12" y="56" font-size="11" fill="#047857">• Catches FloodWaitError</text>
+      <text x="12" y="72" font-size="11" fill="#047857">• Pauses cooperatively (sec + 1)</text>
+      <text x="12" y="88" font-size="10" font-weight="600" fill="#059669">Zero aggressive busy-loops</text>
+    </g>
+
+    <!-- Reconnect & TCP Recovery -->
+    <g transform="translate(555, 44)">
+      <rect x="0" y="0" width="245" height="100" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#991B1B">TCP Connection Recovery</text>
+      <text x="12" y="40" font-size="11" fill="#B91C1C">• Catches WinError 64 drops</text>
+      <text x="12" y="56" font-size="11" fill="#B91C1C">• Broken pipe &amp; 0 bytes read</text>
+      <text x="12" y="72" font-size="11" fill="#B91C1C">• Automated client reconnection</text>
+      <text x="12" y="88" font-size="10" font-weight="600" fill="#DC2626">Resumes without dropped msgs</text>
+    </g>
+
+    <!-- Transport Modalities (Batching vs Anonymize) -->
+    <g transform="translate(20, 158)">
+      <rect x="0" y="0" width="380" height="105" rx="6" fill="#ECFDF5" stroke="#10B981" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#064E3B">Native RPC Batching Mode (Fast)</text>
+      <text x="12" y="40" font-size="11" fill="#047857">• messages.forwardMessages RPC call</text>
+      <text x="12" y="56" font-size="11" fill="#047857">• Forwards up to 100 messages per round-trip</text>
+      <text x="12" y="72" font-size="11" fill="#047857">• Server-side media copy on Telegram data center</text>
+      <text x="12" y="90" font-size="10" font-weight="600" fill="#059669">99% reduction in client bandwidth</text>
+    </g>
+
+    <!-- Anonymized Mode -->
+    <g transform="translate(420, 158)">
+      <rect x="0" y="0" width="380" height="105" rx="6" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#1E3A8A">Anonymized Re-Send Mode (Clean)</text>
+      <text x="12" y="40" font-size="11" fill="#2563EB">• send_message / send_file method</text>
+      <text x="12" y="56" font-size="11" fill="#2563EB">• In-memory media stream buffer to target channel</text>
+      <text x="12" y="72" font-size="11" fill="#2563EB">• Strips original channel attribution tag</text>
+      <text x="12" y="90" font-size="10" font-weight="600" fill="#2563EB">Privacy-preserving migration path</text>
+    </g>
+  </g>
+
+  <!-- 4. Extraction & Analytics Engine (Right) -->
+  <g transform="translate(880, 425)">
+    <rect x="0" y="0" width="320" height="280" rx="8" fill="#EEF2FF" stroke="#6366F1" stroke-width="2" filter="url(#shadow)" />
+    <rect x="0" y="0" width="320" height="30" rx="8" fill="#E0E7FF" />
+    <text x="14" y="20" font-size="12" font-weight="700" fill="#3730A3" letter-spacing="0.5">EXTRACTION ENGINE (link_extractor.py)</text>
+
+    <!-- Entity & Link Parser -->
+    <g transform="translate(15, 44)">
+      <rect x="0" y="0" width="290" height="100" rx="6" fill="#FFFFFF" stroke="#6366F1" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#1E1B4B">Entity &amp; URL Extractor</text>
+      <text x="12" y="40" font-size="11" fill="#4F46E5">• Parses MessageEntityTextUrl</text>
+      <text x="12" y="56" font-size="11" fill="#4F46E5">• Discovers @handles and t.me links</text>
+      <text x="12" y="72" font-size="11" fill="#4F46E5">• Normalizes schemes &amp; domains</text>
+      <text x="12" y="88" font-size="10" font-weight="600" fill="#4338CA">Offline regex &amp; entity inspector</text>
+    </g>
+
+    <!-- Multi-Format Exporter -->
+    <g transform="translate(15, 158)">
+      <rect x="0" y="0" width="290" height="105" rx="6" fill="#FFFFFF" stroke="#6366F1" stroke-width="1.2" />
+      <text x="12" y="22" font-size="13" font-weight="600" fill="#1E1B4B">Multi-Format Exporter</text>
+      <text x="12" y="40" font-size="11" fill="#4F46E5">• JSON streaming format</text>
+      <text x="12" y="56" font-size="11" fill="#4F46E5">• RFC 4180 standard CSV</text>
+      <text x="12" y="72" font-size="11" fill="#4F46E5">• Excel XLSX via OpenPyXL</text>
+      <text x="12" y="90" font-size="10" font-weight="600" fill="#4338CA">Graceful CSV fallback if uninstalled</text>
+    </g>
+  </g>
+
+  <!-- Connectors: Server <-> MTProto Gateway -->
+  <path d="M 860 520 L 880 520" stroke="#6366F1" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- 5. Persistence & Checkpoint Tier (Bottom) -->
+  <g transform="translate(40, 725)">
+    <rect x="0" y="0" width="1160" height="110" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2" filter="url(#shadow)" />
+    <text x="16" y="22" font-size="12" font-weight="700" fill="#78350F" letter-spacing="0.5">PERSISTENCE &amp; FAULT-TOLERANCE LAYER (ATOMIC JSON CHECKPOINTS &amp; ROTATING LOGS)</text>
+
+    <!-- Checkpoint Engine -->
+    <g transform="translate(30, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#92400E">Deterministic SHA-256 Checkpoints</text>
+      <text x="12" y="36" font-size="10" fill="#B45309">resume/&lt;sha256_hash&gt;.json stores last_id</text>
+      <text x="12" y="50" font-size="10" fill="#B45309">Corrupt state recovery: automatic fallback</text>
+    </g>
+
+    <!-- Session Storage -->
+    <g transform="translate(410, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#92400E">Isolated MTProto Sessions</text>
+      <text x="12" y="36" font-size="10" fill="#B45309">sessions/ directory excluded from Git</text>
+      <text x="12" y="50" font-size="10" fill="#B45309">sanitize_session_name() blocks ../ traversal</text>
+    </g>
+
+    <!-- Diagnostic Logs -->
+    <g transform="translate(790, 36)">
+      <rect x="0" y="0" width="340" height="60" rx="5" fill="#FFFFFF" stroke="#F59E0B" stroke-width="1.2" />
+      <text x="12" y="20" font-size="12" font-weight="600" fill="#92400E">Rotating Operational Logs</text>
+      <text x="12" y="36" font-size="10" fill="#B45309">logs/forwarder.log (10 MB max x 3 backups)</text>
+      <text x="12" y="50" font-size="10" fill="#B45309">Zero sensitive phone / token echoes</text>
+    </g>
+  </g>
+
+  <!-- Connectors: Server -> Checkpoint Layer -->
+  <path d="M 450 705 L 450 725" stroke="#F59E0B" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- 6. Legend at Bottom -->
+  <g transform="translate(40, 855)">
+    <rect x="0" y="0" width="1160" height="50" rx="6" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1" />
+    <text x="16" y="30" font-size="11" font-weight="700" fill="#475569">LEGEND:</text>
+    
+    <rect x="85" y="18" width="14" height="14" rx="3" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5"/>
+    <text x="106" y="30" font-size="11" fill="#334155">Presentation (GUI/CLI)</text>
+
+    <rect x="260" y="18" width="14" height="14" rx="3" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5"/>
+    <text x="281" y="30" font-size="11" fill="#334155">Concurrency &amp; QThread</text>
+
+    <rect x="440" y="18" width="14" height="14" rx="3" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5"/>
+    <text x="461" y="30" font-size="11" fill="#334155">Bulk Execution Engine</text>
+
+    <rect x="620" y="18" width="14" height="14" rx="3" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5"/>
+    <text x="641" y="30" font-size="11" fill="#334155">Content Extractor</text>
+
+    <rect x="780" y="18" width="14" height="14" rx="3" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5"/>
+    <text x="801" y="30" font-size="11" fill="#334155">Atomic Checkpoint Store</text>
+
+    <rect x="960" y="18" width="14" height="14" rx="3" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="981" y="30" font-size="11" fill="#334155">TCP Error Recovery</text>
+  </g>
+
+</svg>

@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1140" height="840" viewBox="0 0 1140 840" content="&lt;mxfile host=&quot;app.diagrams.net&quot; modified=&quot;2026-10-03T02:00:00.000Z&quot; agent=&quot;Mozilla/5.0&quot; version=&quot;24.0.0&quot; type=&quot;embed&quot;&gt;
+  &lt;diagram id=&quot;tg-flows&quot; name=&quot;Telegram Pipeline Flow&quot;&gt;
+    &lt;mxGraphModel dx=&quot;1200&quot; dy=&quot;800&quot; grid=&quot;1&quot; gridSize=&quot;10&quot; guides=&quot;1&quot; tooltips=&quot;1&quot; connect=&quot;1&quot; arrows=&quot;1&quot; fold=&quot;1&quot; page=&quot;1&quot; pageScale=&quot;1&quot; pageWidth=&quot;1140&quot; pageHeight=&quot;840&quot; math=&quot;0&quot; shadow=&quot;0&quot;&gt;
+      &lt;root&gt;
+        &lt;mxCell id=&quot;0&quot; /&gt;
+        &lt;mxCell id=&quot;1&quot; parent=&quot;0&quot; /&gt;
+        
+        &lt;mxCell id=&quot;flow-header&quot; value=&quot;&amp;lt;b&amp;gt;Telegram Migration Pipeline — Ingestion &amp;amp;amp; Fault-Tolerant Checkpoint Flow&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Lifecycle Flow • Adaptive FloodWait Backoff • SHA-256 Route Checkpointing • Automatic Crash Resumption&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#0F172A;fontColor=#FFFFFF;align=left;spacingLeft=20;fontSize=13;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;30&quot; width=&quot;1060&quot; height=&quot;70&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        
+        &lt;mxCell id=&quot;f1&quot; value=&quot;&amp;lt;b&amp;gt;1. Start &amp;amp;amp; Route Setup&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Load credentials, parse source &amp;amp;amp; target&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#EFF6FF;strokeColor=#3B82F6;fontColor=#1E3A8A;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;125&quot; width=&quot;230&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f2&quot; value=&quot;&amp;lt;b&amp;gt;2. Route Key &amp;amp;amp; Resume&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;sha256(source-&amp;amp;gt;target), read resume/&amp;amp;lt;hash&amp;amp;gt;.json&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontColor=#78350F;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;315&quot; y=&quot;125&quot; width=&quot;230&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f3&quot; value=&quot;&amp;lt;b&amp;gt;3. MTProto Handshake&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Connect to Telegram DC, load session key&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#F5F3FF;strokeColor=#8B5CF6;fontColor=#4C1D95;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;590&quot; y=&quot;125&quot; width=&quot;230&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f4&quot; value=&quot;&amp;lt;b&amp;gt;4. Iterate Messages&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;iter_messages(min_id=last_id, reverse=True)&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#064E3B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;865&quot; y=&quot;125&quot; width=&quot;235&quot; height=&quot;105&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f5&quot; value=&quot;&amp;lt;b&amp;gt;5. Jitter &amp;amp;amp; Rate Control&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Uniform delay sleep, human cadence&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#064E3B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;865&quot; y=&quot;290&quot; width=&quot;235&quot; height=&quot;110&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f6&quot; value=&quot;&amp;lt;b&amp;gt;6. Dispatch Forward RPC&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Native batch: up to 100 msgs/call&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#ECFDF5;strokeColor=#10B981;fontColor=#064E3B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;590&quot; y=&quot;290&quot; width=&quot;230&quot; height=&quot;110&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f7&quot; value=&quot;&amp;lt;b&amp;gt;7. FloodWait / Drop Catch&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Intercept FloodWaitError, sleep(sec + 1)&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FEF2F2;strokeColor=#EF4444;fontColor=#991B1B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;315&quot; y=&quot;290&quot; width=&quot;230&quot; height=&quot;110&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f8&quot; value=&quot;&amp;lt;b&amp;gt;8. Atomic Checkpoint Write&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Write resume/&amp;amp;lt;hash&amp;amp;gt;.json with last_id&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFBEB;strokeColor=#F59E0B;fontColor=#78350F;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;290&quot; width=&quot;230&quot; height=&quot;110&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+        &lt;mxCell id=&quot;f9&quot; value=&quot;&amp;lt;b&amp;gt;9. Link Extraction &amp;amp;amp; Export&amp;lt;/b&amp;gt;&amp;lt;br&amp;gt;Parse MessageEntityTextUrl, export JSON/CSV/Excel&quot; style=&quot;rounded=1;whiteSpace=wrap;html=1;fillColor=#EEF2FF;strokeColor=#6366F1;fontColor=#1E1B4B;fontSize=11;&quot; vertex=&quot;1&quot; parent=&quot;1&quot;&gt;
+          &lt;mxGeometry x=&quot;40&quot; y=&quot;465&quot; width=&quot;1060&quot; height=&quot;120&quot; as=&quot;geometry&quot; /&gt;
+        &lt;/mxCell&gt;
+      &lt;/root&gt;
+    &lt;/mxGraphModel&gt;
+  &lt;/diagram&gt;
+&lt;/mxfile&gt;">
+  <defs>
+    <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+      text { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      .title { font-weight: 700; fill: #0F172A; }
+      .subtitle { font-weight: 500; fill: #475569; }
+      .box-title { font-weight: 600; font-size: 14px; fill: #0F172A; }
+      .box-desc { font-weight: 400; font-size: 11px; fill: #475569; }
+      .badge-text { font-weight: 600; font-size: 10px; }
+      .boundary-title { font-weight: 700; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+      .edge-label { font-weight: 500; font-size: 11px; fill: #334155; background: #FFFFFF; }
+    </style>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="108%" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.05   0 0 0 0 0.09   0 0 0 0 0.16  0 0 0 0.06 0" />
+      <feOffset dx="0" dy="2" />
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569" />
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563EB" />
+    </marker>
+    <marker id="arrow-emerald" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#059669" />
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#7C3AED" />
+    </marker>
+  </defs>
+
+  <!-- Clean Canvas Background -->
+  <rect width="100%" height="100%" fill="#F8FAFC" rx="12" stroke="#CBD5E1" stroke-width="1.5" />
+  
+  
+  <!-- Header Banner -->
+  <g transform="translate(40, 30)">
+    <rect x="0" y="0" width="1060" height="70" rx="8" fill="#0F172A" />
+    <text x="24" y="32" font-size="20" font-weight="700" fill="#FFFFFF">Telegram Migration Pipeline — Ingestion &amp; Fault-Tolerant Checkpoint Flow</text>
+    <text x="24" y="54" font-size="12" font-weight="400" fill="#94A3B8">Lifecycle Flow • Adaptive FloodWait Backoff • SHA-256 Route Checkpointing • Automatic Crash Resumption</text>
+    <rect x="860" y="22" width="175" height="26" rx="13" fill="#1E293B" stroke="#334155" stroke-width="1"/>
+    <text x="947" y="39" font-size="11" font-weight="600" fill="#10B981" text-anchor="middle">Crash-Safe Recovery</text>
+  </g>
+
+  <!-- Step 1: Start & Config -->
+  <g transform="translate(40, 125)">
+    <rect x="0" y="0" width="230" height="105" rx="8" fill="#EFF6FF" stroke="#3B82F6" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#3B82F6" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">1</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#1E3A8A">Start &amp; Route Setup</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• Load API_ID &amp; API_HASH from .env</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• Resolve session &amp; account preset</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Parse source and target channels</text>
+    <text x="14" y="100" font-size="10" font-weight="600" fill="#2563EB">python cli.py --resume</text>
+  </g>
+
+  <!-- Connector 1 -> 2 -->
+  <path d="M 270 177 L 310 177" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 2: Route Hash & Resume -->
+  <g transform="translate(315, 125)">
+    <rect x="0" y="0" width="230" height="105" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#F59E0B" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">2</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#78350F">Route Key &amp; Resume</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• Hash sha256(source-&gt;target)[:16]</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• Read resume/&lt;hash&gt;.json</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Set min_id = checkpoint.last_id</text>
+    <text x="14" y="100" font-size="10" font-weight="600" fill="#D97706">Zero message re-delivery</text>
+  </g>
+
+  <!-- Connector 2 -> 3 -->
+  <path d="M 545 177 L 585 177" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 3: MTProto Authentication -->
+  <g transform="translate(590, 125)">
+    <rect x="0" y="0" width="230" height="105" rx="8" fill="#F5F3FF" stroke="#8B5CF6" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#8B5CF6" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#4C1D95">MTProto Handshake</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• Connect to Telegram DC cluster</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• Load user auth key from session</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Resolve peer entities (IDs/hashes)</text>
+    <text x="14" y="100" font-size="10" font-weight="600" fill="#7C3AED">telethon.TelegramClient</text>
+  </g>
+
+  <!-- Connector 3 -> 4 -->
+  <path d="M 820 177 L 860 177" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 4: Batch Message Fetch -->
+  <g transform="translate(865, 125)">
+    <rect x="0" y="0" width="235" height="105" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#10B981" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">4</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#064E3B">Iterate Messages</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• client.iter_messages(source)</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• min_id = last_id, reverse=True</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Filter types (text, photo, doc)</text>
+    <text x="14" y="100" font-size="10" font-weight="600" fill="#059669">Strict chronological order</text>
+  </g>
+
+  <!-- Connector 4 -> 5 (Down) -->
+  <path d="M 982 230 L 982 285" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 5: Jitter & Rate Control -->
+  <g transform="translate(865, 290)">
+    <rect x="0" y="0" width="235" height="110" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#10B981" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">5</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#064E3B">Jitter &amp; Rate Control</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• random.uniform(min_d, max_d)</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• Simulates human read rhythm</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Auto-normalizes inverted bounds</text>
+    <text x="14" y="102" font-size="10" font-weight="600" fill="#059669">asyncio.sleep(delay)</text>
+  </g>
+
+  <!-- Connector 5 -> 6 (Left) -->
+  <path d="M 865 345 L 825 345" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 6: Batch Forward RPC -->
+  <g transform="translate(590, 290)">
+    <rect x="0" y="0" width="230" height="110" rx="8" fill="#ECFDF5" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#10B981" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">6</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#064E3B">Dispatch Forward RPC</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• Chunk: up to 100 message IDs</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• client.forward_messages(target)</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Single network round-trip</text>
+    <text x="14" y="102" font-size="10" font-weight="600" fill="#059669">High throughput (msg/s)</text>
+  </g>
+
+  <!-- Connector 6 -> 7 (Left) -->
+  <path d="M 590 345 L 550 345" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 7: FloodWait & Drop Handler -->
+  <g transform="translate(315, 290)">
+    <rect x="0" y="0" width="230" height="110" rx="8" fill="#FEF2F2" stroke="#EF4444" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#EF4444" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">7</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#991B1B">FloodWait / Drop Catch</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• If FloodWaitError: sleep(sec + 1)</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• If WinError 64: auto-reconnect</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Retries batch without losing state</text>
+    <text x="14" y="102" font-size="10" font-weight="600" fill="#DC2626">Adaptive backoff supervisor</text>
+  </g>
+
+  <!-- Connector 7 -> 8 (Left) -->
+  <path d="M 315 345 L 275 345" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 8: Atomic Checkpoint Save -->
+  <g transform="translate(40, 290)">
+    <rect x="0" y="0" width="230" height="110" rx="8" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#F59E0B" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">8</text>
+    <text x="46" y="28" font-size="13" font-weight="600" fill="#78350F">Atomic Checkpoint Write</text>
+    <text x="14" y="52" font-size="11" fill="#334155">• Update last_id to highest msg</text>
+    <text x="14" y="68" font-size="11" fill="#334155">• Write resume/&lt;hash&gt;.json</text>
+    <text x="14" y="84" font-size="11" fill="#334155">• Dispatches sig_progress to GUI</text>
+    <text x="14" y="102" font-size="10" font-weight="600" fill="#D97706">Crash-safe on SIGKILL</text>
+  </g>
+
+  <!-- Connector 8 -> 9 (Down) -->
+  <path d="M 155 400 L 155 460" stroke="#475569" stroke-width="2" marker-end="url(#arrow)" fill="none" />
+
+  <!-- Step 9: Extraction & Export -->
+  <g transform="translate(40, 465)">
+    <rect x="0" y="0" width="1060" height="120" rx="8" fill="#EEF2FF" stroke="#6366F1" stroke-width="1.5" filter="url(#shadow)" />
+    <circle cx="24" cy="24" r="12" fill="#6366F1" />
+    <text x="24" y="28" font-size="12" font-weight="700" fill="#FFFFFF" text-anchor="middle">9</text>
+    <text x="46" y="28" font-size="14" font-weight="600" fill="#1E1B4B">Entity Extraction &amp; Structured Multi-Format Export (link_extractor.py)</text>
+    <text x="14" y="54" font-size="11" fill="#334155">• Offline parser inspects channel message bodies and MTProto MessageEntityTextUrl hyperlinks without mutating channel state.</text>
+    <text x="14" y="72" font-size="11" fill="#334155">• Cleanses URLs, extracts @channel and @user handles, classifies target domains, and computes link frequency distributions.</text>
+    <text x="14" y="90" font-size="11" fill="#334155">• Serializes structured findings into streaming JSON, RFC 4180 standard CSV, or OpenPyXL formatted Excel spreadsheets.</text>
+    <text x="14" y="108" font-size="10" font-weight="600" fill="#4F46E5">Gracefully falls back to CSV if openpyxl is not installed in the host environment</text>
+  </g>
+
+  <!-- Recovery Scenarios Box (Bottom) -->
+  <g transform="translate(40, 615)">
+    <rect x="0" y="0" width="1060" height="195" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow)" />
+    <text x="20" y="26" font-size="13" font-weight="700" fill="#0F172A">UNEXPECTED CRASH &amp; NETWORK FAILURE RECOVERY GUARANTEES</text>
+    
+    <g transform="translate(20, 40)">
+      <rect x="0" y="0" width="325" height="135" rx="6" fill="#FFFBEB" stroke="#F59E0B" stroke-width="1" />
+      <text x="14" y="22" font-size="12" font-weight="600" fill="#92400E">Sudden Power Loss / SIGKILL</text>
+      <text x="14" y="42" font-size="11" fill="#78350F">• Process terminated abruptly by OS.</text>
+      <text x="14" y="58" font-size="11" fill="#78350F">• Checkpoints were saved after each batch.</text>
+      <text x="14" y="74" font-size="11" fill="#78350F">• On relaunch with --resume, engine reads</text>
+      <text x="14" y="90" font-size="11" fill="#78350F">  last_id and continues seamlessly.</text>
+      <text x="14" y="112" font-size="10" font-weight="600" fill="#D97706">Zero duplicate transfers</text>
+    </g>
+
+    <g transform="translate(365, 40)">
+      <rect x="0" y="0" width="330" height="135" rx="6" fill="#FEF2F2" stroke="#EF4444" stroke-width="1" />
+      <text x="14" y="22" font-size="12" font-weight="600" fill="#991B1B">Telegram FloodWait Exceeded</text>
+      <text x="14" y="42" font-size="11" fill="#450A0A">• Telegram server returns mandatory sleep.</text>
+      <text x="14" y="58" font-size="11" fill="#450A0A">• Caught by exception handler; extracts sec.</text>
+      <text x="14" y="74" font-size="11" fill="#450A0A">• Cooperative asyncio.sleep(sec + 1) runs.</text>
+      <text x="14" y="90" font-size="11" fill="#450A0A">• Checkpoint preserved; no data lost.</text>
+      <text x="14" y="112" font-size="10" font-weight="600" fill="#DC2626">Account reputation safe</text>
+    </g>
+
+    <g transform="translate(715, 40)">
+      <rect x="0" y="0" width="325" height="135" rx="6" fill="#F0FDF4" stroke="#22C55E" stroke-width="1" />
+      <text x="14" y="22" font-size="12" font-weight="600" fill="#166534">Corrupted Checkpoint Recovery</text>
+      <text x="14" y="42" font-size="11" fill="#14532D">• If a disk JSON file is truncated or invalid,</text>
+      <text x="14" y="58" font-size="11" fill="#14532D">  loader catches JSONDecodeError.</text>
+      <text x="14" y="74" font-size="11" fill="#14532D">• Logs operational warning, ignores file,</text>
+      <text x="14" y="90" font-size="11" fill="#14532D">  and falls back safely without crashing.</text>
+      <text x="14" y="112" font-size="10" font-weight="600" fill="#16A34A">Self-healing state engine</text>
+    </g>
+  </g>
+
+</svg>

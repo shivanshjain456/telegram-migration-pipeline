@@ -32,54 +32,21 @@ This project was engineered to solve three specific challenges:
 
 ## Core Architecture
 
-```text
-+-----------------------------------------------------------------------------------+
-|                                PRESENTATION TIER                                  |
-|                                                                                   |
-|     +-----------------------------+         +-----------------------------+       |
-|     |      PyQt6 Desktop GUI      |         |     Rich Headless CLI       |       |
-|     |  (Interactive App Runner)   |         |  (Server / Daemon Runner)   |       |
-|     +--------------+--------------+         +--------------+--------------+       |
-+--------------------|---------------------------------------|----------------------+
-                     |                                       |
-                     | Qt Signals / Slots                    | Direct Asyncio Run
-                     v                                       v
-+-----------------------------------------------------------------------------------+
-|                          CONCURRENCY & WORKER BRIDGE                              |
-|                                                                                   |
-|     ForwardWorker (PyQt6 QThread)                                                 |
-|     - Hosts private asyncio event loop (asyncio.new_event_loop())                 |
-|     - Dispatches thread-safe UI signals (sig_progress, sig_log, sig_finished)   |
-|     - Manages graceful cancellation via threading.Event                           |
-+-----------------------------------------------------------------------------------+
-                                     |
-                                     v
-+-----------------------------------------------------------------------------------+
-|                         EXECUTION ENGINE (utils.py)                               |
-|                                                                                   |
-|     [Route Manager]           [Adaptive Throttle]         [Checkpoint Engine]     |
-|     SHA-256 Route Hashing     Jitter Delay (0.8s - 2.5s)  Atomic JSON Writes      |
-|     Channel Queue Resolver    FloodWait Cooldown Pause    resume/<hash>.json      |
-+-----------------------------------------------------------------------------------+
-                                     |
-                                     v
-+-----------------------------------------------------------------------------------+
-|                        TELETHON MTPROTO TRANSPORT LAYER                           |
-|                                                                                   |
-|     * Batch Forwarding: Native RPC forward_messages (up to 100 msgs/call)         |
-|     * Anonymized Re-Send: In-memory media stream buffer -> send_file upload       |
-|     * Socket Reconnect Handler: Automatic TCP handshake recovery                  |
-+-----------------------------------------------------------------------------------+
-                                     |
-                                     v
-+-----------------------------------------------------------------------------------+
-|                   EXTRACTION & ANALYTICS (link_extractor.py)                      |
-|                                                                                   |
-|     - Regex & MTProto MessageEntityTextUrl extraction                             |
-|     - URL normalization and domain classification                                 |
-|     - Export formats: JSON stream, RFC 4180 CSV, formatted Excel spreadsheets     |
-+-----------------------------------------------------------------------------------+
-```
+The diagram below illustrates the Telegram Migration Pipeline's concurrency model, mapping the interaction between the presentation tier (PyQt6 GUI and Rich CLI), the thread-isolated asyncio worker bridge, the core bulk execution engine, and the atomic SHA-256 checkpoint store.
+
+[![Telegram Migration Pipeline Concurrency and Reliability Architecture](docs/architecture/architecture.drawio.svg)](https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1&title=architecture.drawio.svg#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Farchitecture.drawio.svg)
+
+> **Interactive Diagram Navigation:**
+> [Open interactive diagram](https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1&title=architecture.drawio.svg#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Farchitecture.drawio.svg) | [Edit diagram](https://app.diagrams.net/#Hshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Farchitecture.drawio.svg) | [Diagram source](docs/architecture/architecture.drawio.svg) | [Architecture docs](docs/architecture/README.md)
+> 
+> *Secondary Flow:* [Open Checkpoint Flow diagram](https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1&title=core-flows.drawio.svg#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Fcore-flows.drawio.svg) | [Edit Checkpoint Flow](https://app.diagrams.net/#Hshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Fcore-flows.drawio.svg)
+
+### Key Architectural Decisions Visible in the Diagram
+
+1. **Thread-to-Asyncio Event Loop Bridge**: Encapsulates Telethon coroutines inside a dedicated `QThread` (`ForwardWorker`) hosting an isolated `asyncio` event loop. UI updates are dispatched via thread-safe Qt Signals, preventing interface freezing.
+2. **Native MTProto RPC Batching**: Groups up to 100 message IDs per `messages.forwardMessages` invocation, copying media server-side across Telegram data centers to eliminate 99% of client bandwidth consumption.
+3. **Deterministic SHA-256 Route Checkpointing**: Progress states are stored under `resume/<sha256_hash>.json`, preventing path traversal vulnerabilities and allowing instant crash recovery after unexpected power or network failure.
+4. **Adaptive Rate-Limiting & Flood Control**: Injects randomized uniform delays (0.8s to 2.5s) to simulate organic user cadence and intercepts `FloodWaitError` exceptions to sleep cooperatively without busy-looping.
 
 ---
 

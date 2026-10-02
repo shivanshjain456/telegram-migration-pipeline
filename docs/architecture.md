@@ -4,6 +4,17 @@
 
 Telegram Migration Pipeline is a high-throughput, crash-resilient data migration and extraction engine built in Python. It transfers message history, media, and structural content between Telegram channels, supergroups, and private discussions using user-level MTProto protocol connections via Telethon.
 
+---
+
+## Interactive Architecture Diagrams
+
+Editable vector diagrams are maintained in [`docs/architecture/`](./architecture/README.md):
+
+* **Concurrency & Reliability Architecture**: [Open in Lightbox](https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1&title=architecture.drawio.svg#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Farchitecture.drawio.svg) | [Edit Diagram](https://app.diagrams.net/#Hshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Farchitecture.drawio.svg)
+* **Ingestion & Fault-Tolerant Checkpoint Flow**: [Open in Lightbox](https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1&title=core-flows.drawio.svg#Uhttps%3A%2F%2Fraw.githubusercontent.com%2Fshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Fcore-flows.drawio.svg) | [Edit Diagram](https://app.diagrams.net/#Hshivanshjain456%2Ftelegram-migration-pipeline%2Fmain%2Fdocs%2Farchitecture%2Fcore-flows.drawio.svg)
+
+---
+
 The system is designed around four decoupled layers:
 1. **Presentation Layer**: Dual interfaces (PyQt6 Desktop GUI and Rich-powered Headless CLI).
 2. **Concurrence & Worker Bridge**: Thread-isolated `asyncio` event loop runner maintaining non-blocking UI responsiveness.
