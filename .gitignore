@@ -1,0 +1,55 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment variables & secrets (NEVER commit credentials)
+.env
+.env.local
+.env.*
+!.env.example
+credentials.txt
+*.pem
+*.key
+
+# Telegram Session Files (Live Authentication Credentials)
+*.session
+*.session-journal
+sessions/*
+!sessions/.gitkeep
+
+# Checkpoints & Resumption State
+resume/*
+!resume/.gitkeep
+runs/*
+.data/
+
+# Logs and databases
+*.log
+logs/*
+!logs/.gitkeep
+*.sqlite3
+*.db
+*.xlsx
+*.csv
+
+# Environments and testing
+venv/
+env/
+ENV/
+.venv/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Distribution & builds
+dist/
+build/
+*.egg-info/
+
+# Operating system & IDE
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db

@@ -1,0 +1,39 @@
+MIT License
+
+Copyright (c) 2026 Telegram Migration Pipeline Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+### Acceptable Use and Telegram Terms of Service Notice
+
+This tool is designed strictly for authorized personal data migration, channel archiving,
+content management, and administrative backups between channels and groups where the operator
+has legitimate permissions.
+
+By using this software, you agree to:
+1. Comply fully with the Telegram Terms of Service (https://telegram.org/tos) and API Terms.
+2. Refrain from using this tool for spam, unauthorized message scraping, unconsented data collection,
+   harassment, copyright infringement, or intellectual property violation.
+3. Respect rate limits and Telegram flood control limits (FloodWait errors).
+4. Operate solely within boundaries of legal and privacy frameworks in your jurisdiction.
+
+The authors and contributors accept no liability for any misuse, account suspensions,
+or data loss resulting from operation of this software.

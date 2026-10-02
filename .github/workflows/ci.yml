@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Run Automated Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify repository hygiene
+        run: |
+          # Verify no .env or .session files exist in the repository
+          if find . -maxdepth 2 -name "*.session" -o -name ".env" | grep -v "\.env\.example" | grep .; then
+            echo "Error: Unsanitized session or .env files detected!"
+            exit 1
+          fi
+
+      - name: Run automated test suite
+        run: |
+          python -m unittest discover tests -v
