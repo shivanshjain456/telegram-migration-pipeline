@@ -9,7 +9,7 @@
 
 ---
 
-## 60-Second Executive Summary
+## Summary
 
 Telegram Migration Pipeline is an asynchronous data pipeline built in Python to migrate, archive, and extract message histories and media between Telegram channels and groups.
 
@@ -237,7 +237,7 @@ Deep technical architecture guides, design tradeoffs, and operational manuals ar
 
 ---
 
-## What the Owner Built and Owned
+## What is Built
 
 * Designed the dual-interface architecture separating desktop UI (PyQt6) from headless CLI (Rich).
 * Implemented the `QThread`-to-`asyncio` event-loop bridge to prevent desktop UI freezing during high-throughput I/O.
