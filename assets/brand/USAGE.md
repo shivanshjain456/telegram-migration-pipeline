@@ -1,13 +1,13 @@
-# Telegram Migration Pipeline — identity usage
+# Telegram Migration Pipeline - identity usage
 
 > High-throughput, crash-resilient migration and extraction engine for Telegram channels with MTProto batching and adaptive backoff.
 > Audience: Community managers and sysadmins migrating channel archives
 
 ## Concept
-A message bubble releasing a stream of payloads to the right — messages migrating out, checkpointed and resumable.
+A message bubble releasing a stream of payloads to the right - messages migrating out, checkpointed and resumable.
 
 The compact mark carries the identity alone; the primary lockup pairs it with the
-'Telegram Migration Pipeline' wordmark (Space Grotesk SemiBold, converted to outlines — no font
+'Telegram Migration Pipeline' wordmark (Space Grotesk SemiBold, converted to outlines - no font
 required to render the production files).
 **Ownership / provenance:** No Telegram trademarks are used: the mark is an original message-bubble/stream construction, not the Telegram paper-plane.
 
@@ -20,7 +20,7 @@ required to render the production files).
 
 Single-colour reproduction: use `*-mono.svg` (all geometry set to
 `currentColor`); set any colour ≥ 4.5:1 contrast against the background.
-Negative space (needle, slashes, core, route) must always show the background —
+Negative space (needle, slashes, core, route) must always show the background -
 never fill it with a second colour.
 
 ## Typography
