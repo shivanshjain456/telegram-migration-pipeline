@@ -7,6 +7,13 @@
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-25%20passed-brightgreen)](tests/)
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/svg/telegram-migration-pipeline-primary-dark.svg">
+    <img src="assets/brand/svg/telegram-migration-pipeline-primary.svg" alt="Telegram Migration Pipeline — high-throughput, crash-resilient data migration and extraction engine" width="480">
+  </picture>
+</p>
+
 ---
 
 ## Summary

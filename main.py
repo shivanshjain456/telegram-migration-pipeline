@@ -28,6 +28,7 @@ from PyQt6.QtGui import (
     QAction,
     QColor,
     QFont,
+    QIcon,
     QPalette,
     QStandardItem,
     QStandardItemModel,
@@ -283,6 +284,12 @@ class ForwarderGUI(QMainWindow):
         super().__init__()
         load_dotenv()
         self.setWindowTitle("Telegram Bulk Forwarder - GUI")
+        try:
+            icon_path = Path(__file__).resolve().parent / "assets" / "brand" / "png" / "telegram-migration-pipeline-mark-256.png"
+            if icon_path.exists():
+                self.setWindowIcon(QIcon(str(icon_path)))
+        except Exception:
+            pass
         self.resize(1180, 740)
         self.setFont(QFont("Segoe UI", 10))
         self.dark_mode = True
@@ -1568,6 +1575,12 @@ def install_excepthook(app: QApplication):
 if __name__ == "__main__":
     load_dotenv()
     app = QApplication(sys.argv)
+    try:
+        icon_path = Path(__file__).resolve().parent / "assets" / "brand" / "png" / "telegram-migration-pipeline-mark-256.png"
+        if icon_path.exists():
+            app.setWindowIcon(QIcon(str(icon_path)))
+    except Exception:
+        pass
     install_excepthook(app)
     app.setStyle("Fusion")
     win = ForwarderGUI()
